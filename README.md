@@ -3,7 +3,7 @@ Proyecto módulo 4
 
 # Scripts 
 
-1. File module4.R is the one that contains the syntax to respond to the tasks requested in the job.
+1. File run_analysis.R.R is the one that contains the syntax to respond to the tasks requested in the job.
 
 2. The file tity.txt presents the ordered data set
 
