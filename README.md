@@ -7,9 +7,9 @@ Proyecto módulo 4
 
 2. The file tity.txt presents the ordered data set
 
-3. This is the link to the Github repository
+3. This is the link to the Github repository, https://github.com/crosa66/3_Getting_and_Cleaning_Data.git
    
-5. 
+5. A codebook that describes the variables, the data, and any transformations or work you've done to clean the data called CodeBook.md
 
 # Getting and Cleaning Data Course Project
 
