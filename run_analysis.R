@@ -1,48 +1,60 @@
-# Getting and Cleaning Data Project 
+#Load directory
+setwd ("M:/CARMEN/CURSOS/2024_Programa Esp Ciencia de datos Fundamentos con R/3_Obtención y limpieza de datos/Módulo 4/6_Proyecto a entregar/UCI HAR Dataset")
 
+library(dplyr)
+library(tidyr)
 
-library(data.table)
-library(reshape2)
-path <- getwd()
+#Read in All Data
+#Read y_train
+ytrain <- read.table("train/y_train.txt", sep = "")
+#Read X_train
+xtrain <- read.table("train/X_train.txt", sep = "")
+#Read subject_train
+subtrain <- read.table("train/subject_train.txt", sep = "")
+#Read y_test
+ytest <- read.table("test/y_test.txt", sep = "")
+#Read x_test
+xtest <- read.table("test/X_test.txt", sep = "")
+#Read subject_test
+subtest <- read.table("test/subject_test.txt", sep = "")
 
-# Load activity labels and features
-activityLabels <- fread(file.path(path, "UCI HAR Dataset/activity_labels.txt")
-                        , col.names = c("classLabels", "activityName"))
-features <- fread(file.path(path, "UCI HAR Dataset/features.txt")
-                  , col.names = c("index", "featureNames"))
-featuresWanted <- grep("(mean|std)\\(\\)", features[, featureNames])
-measurements <- features[featuresWanted, featureNames]
-measurements <- gsub('[()]', '', measurements)
+###Bind vertically
+xdat <- bind_rows(xtrain,xtest)
+ydat <- bind_rows(ytrain,ytest)
+subdat <- bind_rows(subtrain,subtest)
 
-# Load datasets
-train <- fread(file.path(path, "UCI HAR Dataset/train/X_train.txt"))[, featuresWanted, with = FALSE]
-data.table::setnames(train, colnames(train), measurements)
-trainActivities <- fread(file.path(path, "UCI HAR Dataset/train/Y_train.txt")
-                       , col.names = c("Activity"))
-trainSubjects <- fread(file.path(path, "UCI HAR Dataset/train/subject_train.txt")
-                       , col.names = c("SubjectNum"))
-train <- cbind(trainSubjects, trainActivities, train)
+#remove test and train dataframes.
+rm("xtest","xtrain","ytest","ytrain","subtest","subtrain")
 
-# Load test datasets
-test <- fread(file.path(path, "UCI HAR Dataset/test/X_test.txt"))[, featuresWanted, with = FALSE]
-data.table::setnames(test, colnames(test), measurements)
-testActivities <- fread(file.path(path, "UCI HAR Dataset/test/Y_test.txt")
-                        , col.names = c("Activity"))
-testSubjects <- fread(file.path(path, "UCI HAR Dataset/test/subject_test.txt")
-                      , col.names = c("SubjectNum"))
-test <- cbind(testSubjects, testActivities, test)
+###Add Descriptive Headers to Data.
+featurenames <- read.table("features.txt") %>% select(V2) %>% mutate(V2 = as.character(V2))
+names(xdat) <- featurenames$V2
+rm("featurenames")
 
-# merge datasets
-combined <- rbind(train, test)
+names(ydat) <- "Action.Performed"
+names(subdat) <- "Participant.ID"
 
+###Prepare xdat
+#find and remove unwanted variables
+#Assignment calls for only mean and Standard Deviation values.
+#I am taking this to mean only the variables that specifically end in "mean()" or "std()"
+wanted <- (grepl("mean\\(\\)", names(xdat))|grepl("std\\(\\)", names(xdat)))
 
-# Convert classLabels to activityName basically
-combined[["Activity"]] <- factor(combined[, Activity]
-                              , levels = activityLabels[["classLabels"]]
-                              , labels = activityLabels[["activityName"]])
+xdat <- xdat[which(wanted)]
+rm("wanted")
 
-combined[["SubjectNum"]] <- as.factor(combined[, SubjectNum])
-combined <- reshape2::melt(data = combined, id = c("SubjectNum", "Activity"))
-combined <- reshape2::dcast(data = combined, SubjectNum + Activity ~ variable, fun.aggregate = mean)
+### Prepare ydat
+#we need to replace these numbers with useful factor names.
+activity <- as.character(read.table("activity_labels.txt")$V2)
+ydat <- ydat %>% mutate(Action.Performed = activity[Action.Performed])
+rm("activity")
 
-write.table(x = combined, file = "tidyData2.txt",row.name=FALSE,quote = FALSE)
+### Bind the columns into one, processed dataset.
+Processed <- bind_cols(subdat,ydat,xdat)
+
+### write cleaned dataset into wd
+write.table(Processed, "Clean Data.txt")
+
+### return means by Participant and action performed.
+Summarized <- Processed %>% group_by(Participant.ID,Action.Performed) %>% summarize_each(funs(mean))
+write.table(Summarized,"Output Summary.txt",rownames=FALSE)
