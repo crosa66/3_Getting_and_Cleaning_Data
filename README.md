@@ -3,7 +3,7 @@ Proyecto módulo 4
 
 # Scripts 
 
-1. File run_analysis.R.R is the one that contains the syntax to respond to the tasks requested in the job.
+1. File run_analysis.R is the one that contains the syntax to respond to the tasks requested in the job.
 
 2. The file tity.txt presents the ordered data set
 
@@ -40,6 +40,7 @@ Appropriately labels the data set with descriptive variable names.
 
 From the data set in step 4, creates a second, independent tidy data set with the average of each variable for each activity and each subject.
 
+# run_analysis.R 
 
 
 
