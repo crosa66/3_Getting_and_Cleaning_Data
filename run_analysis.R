@@ -18,7 +18,7 @@ xtest <- read.table("test/X_test.txt", sep = "")
 #Read subject_test
 subtest <- read.table("test/subject_test.txt", sep = "")
 
-###Bind vertically
+###Bind file
 xdat <- bind_rows(xtrain,xtest)
 ydat <- bind_rows(ytrain,ytest)
 subdat <- bind_rows(subtrain,subtest)
