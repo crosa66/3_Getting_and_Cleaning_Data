@@ -20,13 +20,10 @@ this article
 . Companies like Fitbit, Nike, and Jawbone Up are racing to develop the most advanced algorithms to attract new users. The data linked to from the course website represent data collected from the accelerometers from the Samsung Galaxy S smartphone. A full description is available at the site where the data was obtained:
 
 http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones
- 
 
 Here are the data for the project:
-
  
 https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip
-  
 
 You should create one R script called run_analysis.R that does the following. 
 
@@ -42,6 +39,12 @@ From the data set in step 4, creates a second, independent tidy data set with th
 
 # run_analysis.R 
 
-
+The file does the following:
+1. Read in All Data
+2. Read all the data and split it into the train and test set
+3. Add Descriptive Headers to Data.
+4. Find and remove unwanted variables. Only mean and Standard Deviation values.
+5. Merge datasets train and test.
+6. Write cleaned dataset 
 
 
